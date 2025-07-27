@@ -12,6 +12,7 @@ from core.nasa.exoplanets import fetch_exoplanet_count
 
 st.set_page_config(page_title="TDM Nexus AI v9.0", layout="wide", page_icon="🌌")
 
+# --- STYLING ---
 st.markdown("""
 <style>
     .main { background-color: #0a0a0a; color: #00ff88; }
@@ -21,8 +22,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# --- HEADER ---
 st.title("🌌 TDM Nexus AI v9.0")
 st.subheader("Validating TDM 4.0 with Real NASA APIs Only")
+
+# --- FIX: Add fallback for NASA API key ---
+try:
+    api_key = st.secrets["NASA_API_KEY"]
+except KeyError:
+    st.warning("NASA API key not found. Using DEMO_KEY (limited). Add your key in Streamlit Secrets.")
+    api_key = "DEMO_KEY"  # Safe for testing
 
 with st.sidebar:
     st.image("https://api.nasa.gov/images/logo.png", width=120)
@@ -64,7 +73,6 @@ if run_sim:
     st.subheader("4. Real NASA Mission Data")
 
     a, m, e, n = st.columns(4)
-    api_key = st.secrets["NASA_API_KEY"]
     with a: st.image(fetch_apod(api_key)["url"], caption="APOD")
     with m: st.image(fetch_mars_photo(api_key), caption="Mars")
     with e: st.image(fetch_epic_image(api_key), caption="Earth (EPIC)")
